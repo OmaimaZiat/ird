@@ -1,0 +1,135 @@
+<div class="p-grid">
+    <div class="p-col-12">
+        <p-toast></p-toast>
+        <div class="card">
+            <p-toolbar styleClass="p-mb-4">
+                <ng-template pTemplate="left">
+                                            <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2 p-mb-2"
+                                (click)="openCreateCommandeTag('commandeTag')"></button>
+
+
+                    <button pButton pRipple label="Recherche"
+                            icon="pi pi-{{findByCriteriaShow?'angle-down':'angle-right'}}"
+                            class="p-button-success p-mr-2 p-mb-2"
+                            (click)="this.findByCriteriaShow = !this.findByCriteriaShow"></button>
+                </ng-template>
+                <ng-template pTemplate="right">
+                    <div class="flex">
+                        <p-splitButton label="Exporter" icon="pi pi-download" styleClass="p-button-help" [model]="excelPdfButons"></p-splitButton>
+                    </div>
+                </ng-template>
+
+            </p-toolbar>
+            <p-toolbar *ngIf="findByCriteriaShow">
+
+                <div class="align-form-search">
+                            <span class=" p-float-label p-mr-3 align-search-items p-mt-4">
+                                <p-dropdown [options]="commandes" [(ngModel)]="searchCommandeTag.commandeVo"
+                                        id="1"
+                                        [filter]="true" [showClear]="true"  placeholder="Commande"
+                                        optionLabel="reference">
+                                </p-dropdown>
+                            </span>
+                            <span class=" p-float-label p-mr-3 align-search-items p-mt-4">
+                                <p-dropdown [options]="tags" [(ngModel)]="searchCommandeTag.tagVo"
+                                        id="2"
+                                        [filter]="true" [showClear]="true"  placeholder="Tag"
+                                        optionLabel="libelle">
+                                </p-dropdown>
+                            </span>
+                </div>
+
+                <div class="align-search-button">
+                    <button pButton pRipple label="Valider" icon="pi pi-sort-amount-down"
+                            class="p-button-info p-mr-2" (click)="searchRequest()"></button>
+                </div>
+            </p-toolbar>
+
+
+            <p-table #dt [value]="commandeTags" [columns]="cols" [rows]="4" [paginator]="true"
+                    [globalFilterFields]="['reference', 'libelle']" [(selection)]="selectedCommandeTag"
+                    [rowHover]="true" dataKey="id" styleClass="p-datatable-customers"
+                                      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                    [showCurrentPageReport]="true">
+                <ng-template pTemplate="caption">
+                    <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between table-header">
+                        <h5 class="p-m-0">Liste des Commande tags</h5>
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" placeholder="Search..." (input)="dt.filterGlobal($event.target.value, 'contains')"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+
+                                
+                                <th pSortableColumn="commande">
+                                    <div class="p-d-flex p-jc-between p-ai-center">
+                                        <span>Commande</span>
+                                        <p-sortIcon field="commande"></p-sortIcon>
+                                    </div>
+                                </th>
+                                
+
+
+                                
+                                <th pSortableColumn="tag">
+                                    <div class="p-d-flex p-jc-between p-ai-center">
+                                        <span>Tag</span>
+                                        <p-sortIcon field="tag"></p-sortIcon>
+                                    </div>
+                                </th>
+                                
+
+
+                        <th>Actions</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-commandeTag>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="commandeTag"></p-tableCheckbox>
+                        </td>
+                            
+                                <td>{{commandeTag.commandeVo?.reference}}</td>
+                            
+
+                            
+                                <td>{{commandeTag.tagVo?.libelle}}</td>
+                            
+
+
+                        <td>
+                            <button pButton pRipple icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-success p-mr-2"
+                                    (click)="editCommandeTag(commandeTag)"></button>
+                            <button pButton pRipple icon="pi pi-list" class="p-button-rounded p-button-info p-mr-2"
+                                    (click)="viewCommandeTag(commandeTag)"></button>
+                            <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger p-mr-2"
+                                    (click)="deleteCommandeTag(commandeTag)"></button>
+
+                            <button pButton pRipple icon="pi pi-copy" class="p-button-rounded p-button-raised p-button-warning"
+                                    (click)="duplicateCommandeTag(commandeTag)"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="summary">
+                    <div class="p-d-flex p-ai-center p-jc-between">
+                        En totale
+                        il {{commandeTags ? commandeTags.length == 1 ? 'y a' : 'y a' : 'y a' }} {{commandeTags ? commandeTags.length : 0 }} {{commandeTags ? commandeTags.length == 1 ? 'commandeTag' : 'commandeTags' : 0 }}
+                        .
+                    </div>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <app-commande-tag-create-admin></app-commande-tag-create-admin>
+        <app-commande-tag-edit-admin></app-commande-tag-edit-admin>
+        <app-commande-tag-view-admin></app-commande-tag-view-admin>
+        <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+    </div>
+</div>
